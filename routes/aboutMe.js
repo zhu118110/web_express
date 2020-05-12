@@ -1,6 +1,6 @@
-var express = require('express');
+let express=require("express");
 var router = express.Router();
-var tb_prdList =require('../public/javascripts/tab1.js');
+var tb_regist =require('../public/javascripts/regist');
 router.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header('Access-Control-Allow-Credentials', true);
@@ -10,30 +10,25 @@ router.all('*', function(req, res, next) {
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
 });
+// ---------------------------------------------------------------关于我的页面的后台接口----------------------------------------------------------------------------
 
-
-// 首页推荐内容
-router.get("/prdList",function(req,res){
-    tb_prdList.find({},function(err,doc){
+// 关于我 页面刚加载时根据用户id获取用户信息返回给前端
+router.post("/aboutMe",function(req,res){
+    let [userId=""]=[req.body.userId];
+   
+    tb_regist.findOne({"_id":userId},function(err,doc){
         if(err){
             res.json({
                 statu:"error",
-                msg:"获取数据失败"
-            })
-        }else if(doc.length>0){
-            res.json({
-                statu:"success",
-                data:doc,
-                msg:"获取数据成功"
+                
             })
         }else{
             res.json({
-                statu:"warning",
-                data:doc,
-                msg:"没有更多数据"
+                statu:"success",
+                data:doc
             })
         }
     })
 })
 
-module.exports = router;
+module.exports=router;

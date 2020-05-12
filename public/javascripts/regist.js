@@ -3,7 +3,8 @@ var model=require("./dataBase.js");
 var schema=new model.Schema({
 	"account":String,
     "passWorld":String,
-    "phone":String
+    "phone":String,
+    "userName":String
 });
 var regist=model.model("regist",schema,"regist");
 module.exports=regist;

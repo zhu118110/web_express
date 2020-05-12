@@ -6,9 +6,10 @@ var schema=new model.Schema({
     'user_id':String,   //用户id
 	// "productId":String,    //所属商品id,如女装,男装
     // "categaryId":String,   //所属分类id，如女士t恤,男士T恤
-    // "price":String,    //价格
+    "prd_price":String,    //价格
     // "number":Number,   //库存
-    // "img":String,
+    "prd_img":String,    //商品主图
+    "collect_date":String,   //收藏时间
 });
 var collect=model.model("collect",schema,"collect");
 module.exports=collect;

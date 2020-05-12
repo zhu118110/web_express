@@ -1,7 +1,7 @@
 let express = require('express');
 let router = express.Router();
-let prdList =require('../public/javascripts/tab1.js');   //首页推荐数据表
-let collect =require('../public/javascripts/collect.js');   //收藏表
+let tb_prdList =require('../public/javascripts/tab1.js');   //首页推荐数据表
+let tb_collect =require('../public/javascripts/collect.js');   //收藏表
 router.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header('Access-Control-Allow-Credentials', true);
@@ -11,11 +11,13 @@ router.all('*', function(req, res, next) {
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
 });
+// ---------------------------------------------------------------商品详情页的后台接口----------------------------------------------------------------------------
 
-// 详情页api
+
+// 刚进入详情页时根据商品id给前端返回这个商品的信息
 router.post("/detail",function(req,res){
     let prd_id=req.body.prd_id;
-    prdList.findOne({"_id":prd_id},function(err,doc){
+    tb_prdList.findOne({"_id":prd_id},function(err,doc){
         try{
             err
         }catch{
@@ -31,14 +33,14 @@ router.post("/detail",function(req,res){
     })
 })
 
+
 // 前端进入详情页先查看此商品是否被收藏
 // 1代表已被收藏，0代表没有收藏
 router.post("/findCollect",function(req,res){
     let prd_id=req.body.prd_id;
     let user_id=req.body.user_id;
-    console.log("商品id"+prd_id);
-    console.log("用户id"+user_id);
-    collect.find({"user_id":user_id,"prd_id":prd_id},function(err,doc){
+  
+    tb_collect.find({"user_id":user_id,"prd_id":prd_id},function(err,doc){
         try {
             err
         }
@@ -47,11 +49,13 @@ router.post("/findCollect",function(req,res){
                 statu:"error"
             })
         }
+        // 代表已经收藏
         if(doc.length>0){
             res.json({
                 code:"1"
             })
         }else{
+            // 代表没有收藏
             res.json({
                 code:"0"
             })
@@ -62,13 +66,23 @@ router.post("/findCollect",function(req,res){
 
 // 商品详情页点击添加收藏功能
 router.post("/addCollect",function(req,res){
-    let prd_id=req.body.prd_id;
     let user_id=req.body.user_id;
-    let enity=new collect({
-        prd_id:prd_id,
-        user_id:user_id
-    })
+    let collect_date=req.body.collect_date;
+    // let prd_id=req.body.prd_id;
+    // let prd_img=req.body.prd_img;
+    // let prd_price=req.body.prd_price;
+    let prdArr=JSON.parse(req.body.prd);
+    let enity=new tb_collect({});
     
+   
+    enity.user_id=user_id;
+    enity.collect_date=collect_date;
+
+    prdArr.forEach(val=>{
+        enity.prd_id=val._id,
+        enity.prd_price=val.price,
+        enity.prd_img=val.img
+    });
     enity.save(err=>{
         try {
             err
@@ -88,7 +102,7 @@ router.post("/addCollect",function(req,res){
 router.post("/cancelCollect",function(req,res){
     let prd_id=req.body.prd_id;
     let user_id=req.body.user_id;
-    collect.find({"user_id":user_id,"prd_id":prd_id},function(err,doc){
+    tb_collect.find({"user_id":user_id,"prd_id":prd_id},function(err,doc){
         try {
             err
         }
