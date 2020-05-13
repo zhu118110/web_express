@@ -10,6 +10,8 @@ var schema=new model.Schema({
     // "number":Number,   //库存
     "prd_img":String,    //商品主图
     "collect_date":String,   //收藏时间
+    "title":String,
+    "buy":String
 });
 var collect=model.model("collect",schema,"collect");
 module.exports=collect;

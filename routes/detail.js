@@ -81,7 +81,9 @@ router.post("/addCollect",function(req,res){
     prdArr.forEach(val=>{
         enity.prd_id=val._id,
         enity.prd_price=val.price,
-        enity.prd_img=val.img
+        enity.prd_img=val.img,
+        enity.title=val.title,
+        enity.buy=val.buy
     });
     enity.save(err=>{
         try {
