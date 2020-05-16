@@ -54,7 +54,7 @@ router.post("/regist",function(req,res){
             account:account,
             passWorld:passWorld,
             phone:phone,
-            userName:`客官${userNum}`
+            userName:`用户${userNum}`
         })
         entity.save(function(err){
             if(err){

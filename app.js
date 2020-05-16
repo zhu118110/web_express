@@ -5,12 +5,13 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 
-var indexRouter = require('./routes/index');
+
 var login = require('./routes/login');   //登录注册页接口
 var tuijian = require('./routes/tab1');   //首页推荐接口
 var detail = require('./routes/detail');   //商品详情页接口
 var aboutMe = require('./routes/aboutMe');   //关于我 页面接口
 var collect = require('./routes/collect');   //我的收藏 页面接口
+var address = require('./routes/address');   //我的地址 页面接口
 
 var app = express();
 app.all('*', function (req, res, next) {
@@ -32,12 +33,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+
 app.use('/', login);
 app.use('/', tuijian);
 app.use('/', detail);
 app.use('/', aboutMe);
 app.use('/', collect);
+app.use('/', address);
 
 
 // catch 404 and forward to error handler
