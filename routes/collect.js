@@ -13,8 +13,11 @@ router.all("*",function(req,res,next){
     next();
 })
 // ------------------------------------收藏页面的数据接口--------------------------------
+
+let user_Id="";
+// 刚进入收藏页时根据用户的id查找用户收藏的数据
 router.post("/collect",function(req,res){
-    let user_Id=req.body.user_Id;
+    user_Id=req.body.user_Id;
     console.log(user_Id)
     tb_collect.find({"user_id":user_Id},function(err,doc){
         try{
@@ -31,5 +34,12 @@ router.post("/collect",function(req,res){
             data:doc 
         })
     })
+})
+
+
+router.post("/delete",function(req,res){
+    let prdIdArr=JSON.parse(req.body.prdIdArr);
+    
+    
 })
 module.exports=router;

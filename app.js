@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-
+// mongoose.set('useFindAndModify', false)
 
 var login = require('./routes/login');   //登录注册页接口
 var tuijian = require('./routes/tab1');   //首页推荐接口
