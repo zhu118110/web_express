@@ -77,41 +77,73 @@ router.post('/selectAddress',function(req,res){
 
 //改: 改变默认地址
 router.post('/setDefault',function(req,res){
-  let userId=req.body.userId;   //用户ID
-  let index=req.body.index;   //  要设置的地址的下标
+//用户ID   要设置的地址的id
+  let [userId,_id]=[req.body.userId,req.body._id];
+
   // 1.先根据用户id找到所有的地址数据
   tb_address.find({userId},function(err,doc){
-    // 2.遍历地址数据,如果下标与用户设置的地址的下标相等则改变数据库中的默认值为true，其他地址变为false
+    // 2.遍历地址数据,如果下标与用户设置的地址的id相等则改变数据库中的默认值为true，其他地址变为false
     doc.forEach((val,i,arr)=>{
-      if(i==index){
+      if(val._id==_id){
         updata(val,true)
       }else{
 
-        updata(val,false)
+        updata(val,false);
+
       }
     })
   })
 
   function updata(val,isDefault){
-    tb_address.update({"_id":val._id},{"$set":{
+    tb_address.updateOne({"_id":val._id},{"$set":{
       "isDefault":isDefault
     }},function(err,doc){
       if(err) throw err;
-      
+      if(isDefault==true){
+        res.json({
+          code:"1"
+        })
+      }
     })
   }
 })
 
-// 删:删除地址
 
+// 改:更新编辑后的地址
+router.post("/editAddress",function(req,res){
+  let [userId,_id,recipients,phone,province,city,district,detailAddress]=[
+   req.body.userId,
+   req.body._id,
+   req.body.recipients,
+   req.body.phone,
+   req.body.province,
+   req.body.city,
+   req.body.district,
+   req.body.detailAddress,
+  ];
+  tb_address.update({userId,_id},{$set:{
+    recipients,
+    phone,
+    province,
+    city,district,
+    detailAddress
+  }},function(err,doc){
+    if(err) throw err;
+    res.json({
+      code:"1",
+    })
+  })
+})
+
+
+
+// 删:删除地址
 router.post("/delAddress",function(req,res){
-  let userId=req.body.userId;
-  let _id=req.body._id;
+  let [userId,_id]=[req.body.userId,req.body._id];
   tb_address.findOneAndRemove({userId,_id},function(err,doc){
     if(err) throw err;
     res.json({
       code:"1",
-     
     })
   })
 })

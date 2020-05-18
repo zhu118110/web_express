@@ -14,11 +14,10 @@ router.all("*",function(req,res,next){
 })
 // ------------------------------------收藏页面的数据接口--------------------------------
 
-let user_Id="";
+
 // 刚进入收藏页时根据用户的id查找用户收藏的数据
 router.post("/collect",function(req,res){
-    user_Id=req.body.user_Id;
-    console.log(user_Id)
+    let user_Id=req.body.user_Id;
     tb_collect.find({"user_id":user_Id},function(err,doc){
         try{
             err
@@ -28,7 +27,7 @@ router.post("/collect",function(req,res){
 
             })
         }
-        console.log(doc);
+        // console.log(doc);
         res.json({
             statu:"success",
             data:doc 
@@ -37,9 +36,28 @@ router.post("/collect",function(req,res){
 })
 
 
-router.post("/delete",function(req,res){
-    let prdIdArr=JSON.parse(req.body.prdIdArr);
-    
+// 根据用户id和收藏的商品id从数据库删除商品
+router.post("/delCollect",function(req,res){
+    let user_id=req.body.userId;
+    let prdIdArr=JSON.parse(req.body.prd_idArr);
+    let length=0;
+    prdIdArr.forEach((val,i)=>{
+        tb_collect.findOneAndRemove({user_id,"_id":val},function(err,doc){
+            if(err){
+                res.json({code:"0"})
+            }else{
+                // doc:  删除的商品
+                let delDoc=[];         
+                delDoc.push(doc);
+                length+=delDoc.length;
+                if(length==prdIdArr.length){
+                    res.json({
+                        code:"1"
+                    })
+                }
+            }
+        })
+    })
     
 })
 module.exports=router;
