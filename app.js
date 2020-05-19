@@ -33,6 +33,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 要接收客户端上传的文件时必须写
+var bodyParser = require('body-parser')
+app.use(bodyParser.json({limit:'50mb'}));
+app.use(bodyParser.urlencoded({limit:'50mb',extended:false}));
 
 app.use('/', login);
 app.use('/', tuijian);

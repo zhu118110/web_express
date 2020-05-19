@@ -55,7 +55,11 @@ router.post("/regist",function(req,res){
             passWorld:passWorld,
             phone:phone,
             userName:`用户${userNum}`
+            
         })
+        if(req.body.headImg){ 	//  如果发布时没输入作者名称则使用数据库默认指定的值
+            enity.headImg=req.body.headImg;
+        }
         entity.save(function(err){
             if(err){
                 res.json({
