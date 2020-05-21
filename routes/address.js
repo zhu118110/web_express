@@ -64,11 +64,18 @@ router.post('/selectAddress',function(req,res){
           code:"0"
         })
       }else{
-      
-        res.json({
-          code:"1",
-          data:doc
-        })
+        if(doc.length>0){
+          res.json({
+            code:"1",
+            data:doc
+          })
+        }else{
+          res.json({
+            code:"2",
+            data:doc
+          })
+        }
+        
       }
     })
 })

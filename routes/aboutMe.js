@@ -63,7 +63,7 @@ router.post("/uploadHeadImg",function(req,res){
             tb_regist.findByIdAndUpdate({"_id":userId},{"$set":{
                 "headImg":filePath
             }},function(err,doc){
-                console.log(doc);
+             
                 if(err&&!doc){
                     res.json({
                         code:"0"
