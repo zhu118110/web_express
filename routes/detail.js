@@ -22,11 +22,13 @@ router.post("/detail",function(req,res){
             err
         }catch{
             res.json({
+                code:"0",
                 statu:"error"
             })
         }
         
         res.json({
+            code:"1",
             statu:"success",
             data:doc
         })
