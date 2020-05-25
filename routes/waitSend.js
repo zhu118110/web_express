@@ -11,7 +11,9 @@ router.all('*', function(req, res, next) {
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
 });
-// -------------------点击立即购买后生成等待发货的订单------------------------------------------
+// -------------------等待发货的订单------------------------------------------
+
+// 点个商品购买后生产等待发货的信息
 router.post("/buySingle",function(req,res){
     let user_id=req.body.user_id;
     let prd_id=req.body.prd_id;
@@ -28,12 +30,14 @@ router.post("/buySingle",function(req,res){
         buy_date,
         buy_number,
         totle,
+        status:0,
         recipients:address[0].recipients,
         phone:address[0].phone,
         province:address[0].province,
         city:address[0].city,
         district:address[0].district,
         detailAddress:address[0].detailAddress,
+        
     });
     enite.save(function(err){
         if(err){
@@ -45,5 +49,61 @@ router.post("/buySingle",function(req,res){
          
         }
     })
+});
+
+
+// 根据用户id查找订单表字段status为0的商品，渲染在未发货页面上
+router.post("/waitSendData",function(req,res){
+    let user_id=req.body.userId;
+    let target=req.body.target;   //waitSend | alreadySend   根据不同的值请求不同的订单状态
+
+    switch(target){
+        case "waitSend":    //查找等待发货的数据
+            tb_waitSend.find({user_id},function(err,doc){
+                if(err){
+                    res.json({
+                        code:"0",
+                    })
+                }else if(doc.length>0){
+                    let arr=[];
+                    doc.forEach(val=>{
+                        if(val.status==0){
+                            arr.push(val);
+                        }
+                    })
+                    res.json({
+                        code:"1",
+                        num:arr.length,
+                    })
+                }
+            })
+        break;
+         
+        case "alreadySend": //查找已经发货的数据
+            tb_waitSend.find({user_id},function(err,doc){
+                if(err){
+                    res.json({
+                        code:"0",
+                    })
+                }else if(doc.length>0){
+                    let arr=[];
+                    doc.forEach(val=>{
+                        if(val.status==1){
+                            arr.push(val);
+                        }
+                    })
+                    res.json({
+                        code:"1",
+                        num:arr.length,
+                    })
+                }
+            })
+        break;
+    }
+    
 })
+
+
+
+
 module.exports = router;

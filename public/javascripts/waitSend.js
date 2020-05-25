@@ -17,9 +17,9 @@ var schema=new model.Schema({
     "city": String,  //市
     "district":String,   //县区
     "detailAddress": String,   //详细地址
-    "status":{     //订单状态，默认false，表示未发货
-        type:Boolean,
-        default:false
+    "status":{     //订单状态，默认0，表示未发货
+        type:Number,
+        default:0
     }
 });
 var waitSend=model.model("waitSend",schema,"waitSend");
