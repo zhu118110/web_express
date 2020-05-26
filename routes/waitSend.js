@@ -21,8 +21,9 @@ router.post("/buySingle",function(req,res){
     let buy_date=req.body.buy_date;  //购买的时间
     let buy_number=req.body.buy_number;  //购买的数量
     let totle=req.body.totle;   //商品总价
+    let payStyle=req.body.payStyle;   //支付的方式
     let address=JSON.parse(req.body.address)   //收货地址
-    
+    console.log(payStyle)
     let enite =new tb_waitSend({
         user_id,
         prd_id,
@@ -30,6 +31,7 @@ router.post("/buySingle",function(req,res){
         buy_date,
         buy_number,
         totle,
+        payStyle,
         status:0,
         recipients:address[0].recipients,
         phone:address[0].phone,

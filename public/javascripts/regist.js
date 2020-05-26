@@ -1,5 +1,7 @@
 var express=require("express");
 var model=require("./dataBase.js");
+
+// 注册登录表
 var schema=new model.Schema({
 	"account":String,
     "passWorld":String,

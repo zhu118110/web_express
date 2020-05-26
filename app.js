@@ -8,6 +8,7 @@ var logger = require('morgan');
 
 var login = require('./routes/login');   //登录注册页接口
 var tuijian = require('./routes/tab1');   //首页推荐接口
+var classify= require('./routes/classify');    //分类 页面接口
 var detail = require('./routes/detail');   //商品详情页接口
 var aboutMe = require('./routes/aboutMe');   //关于我 页面接口
 var collect = require('./routes/collect');   //我的收藏 页面接口
@@ -41,6 +42,7 @@ app.use(bodyParser.urlencoded({limit:'50mb',extended:false}));
 
 app.use('/', login);
 app.use('/', tuijian);
+app.use('/', classify);
 app.use('/', detail);
 app.use('/', aboutMe);
 app.use('/', collect);
