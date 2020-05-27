@@ -22,8 +22,8 @@ router.post("/buySingle",function(req,res){
     let buy_number=req.body.buy_number;  //购买的数量
     let totle=req.body.totle;   //商品总价
     let payStyle=req.body.payStyle;   //支付的方式
-    let address=JSON.parse(req.body.address)   //收货地址
-    console.log(payStyle)
+    let address=JSON.parse(req.body.address);   //收货地址
+    let orderNumber=req.body.orderNumber;   //订单号
     let enite =new tb_waitSend({
         user_id,
         prd_id,
@@ -32,6 +32,7 @@ router.post("/buySingle",function(req,res){
         buy_number,
         totle,
         payStyle,
+        orderNumber,
         status:0,
         recipients:address[0].recipients,
         phone:address[0].phone,
@@ -39,7 +40,6 @@ router.post("/buySingle",function(req,res){
         city:address[0].city,
         district:address[0].district,
         detailAddress:address[0].detailAddress,
-        
     });
     enite.save(function(err){
         if(err){
@@ -61,48 +61,39 @@ router.post("/waitSendData",function(req,res){
 
     switch(target){
         case "waitSend":    //查找等待发货的数据
-            tb_waitSend.find({user_id},function(err,doc){
-                if(err){
-                    res.json({
-                        code:"0",
-                    })
-                }else if(doc.length>0){
-                    let arr=[];
-                    doc.forEach(val=>{
-                        if(val.status==0){
-                            arr.push(val);
-                        }
-                    })
-                    res.json({
-                        code:"1",
-                        num:arr.length,
-                    })
-                }
-            })
+            findOrder(0)
         break;
          
-        case "alreadySend": //查找已经发货的数据
-            tb_waitSend.find({user_id},function(err,doc){
-                if(err){
-                    res.json({
-                        code:"0",
-                    })
-                }else if(doc.length>0){
-                    let arr=[];
-                    doc.forEach(val=>{
-                        if(val.status==1){
-                            arr.push(val);
-                        }
-                    })
-                    res.json({
-                        code:"1",
-                        num:arr.length,
-                    })
-                }
-            })
+        case "alreadySend": //查找已经发货的数据，statu是1
+            findOrder(1)
         break;
     }
     
+    function findOrder(statuNumber){
+        tb_waitSend.find({user_id},function(err,doc){
+            if(err){
+                res.json({
+                    code:"0",
+                })
+            }else if(doc.length>0){
+                let arr=[];
+                doc.forEach(val=>{
+                    if(val.status==statuNumber){
+                        arr.push(val);
+                    }
+                })
+                res.json({
+                    code:"1",
+                    num:arr.length,
+                })
+            }else{
+                res.json({
+                    code:"-1",
+                    
+                })
+            }
+        })
+    }
 })
 
 

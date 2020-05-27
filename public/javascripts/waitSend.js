@@ -12,6 +12,7 @@ var schema=new model.Schema({
     "buy_number":Number,   //购买的数量
     "totle":Number,   //总价
     "payStyle":String,   //支付方式
+    "orderNumber":String,    //订单号
     "recipients":String,  //收件人
     "phone":String,   //手机号
     "province": String,   //省

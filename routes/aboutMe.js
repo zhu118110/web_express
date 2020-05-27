@@ -58,7 +58,7 @@ router.post("/uploadHeadImg",function(req,res){
             let filePath="http://192.168.88.69:3200";
             filePath+=files[name].path.substring(6);  //将返回的临时地址中的 public\ 字段删掉改为服务端地址
             filePath=filePath.replace(/\\/img,"/");    //将路径中的\变为/
-            
+            console.log("图片地址是"+filePath)
             // 更新头像字段
             tb_regist.findByIdAndUpdate({"_id":userId},{"$set":{
                 "headImg":filePath
