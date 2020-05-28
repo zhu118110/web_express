@@ -1,6 +1,8 @@
 let express = require('express');
 let router = express.Router();
 let tb_prdList =require('../public/javascripts/tab1.js');   //首页推荐数据表
+let tb_prdAttr =require('../public/javascripts/attr.js');     //商品属性表
+let tb_prdAttrVal =require('../public/javascripts/attr_val.js');     //商品属性值表
 let tb_collect =require('../public/javascripts/collect.js');   //收藏表
 router.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -17,21 +19,99 @@ router.all('*', function(req, res, next) {
 // 刚进入详情页时根据商品id给前端返回这个商品的信息
 router.post("/detail",function(req,res){
     let prd_id=req.body.prd_id;
-    tb_prdList.findOne({"_id":prd_id},function(err,doc){
-        try{
-            err
-        }catch{
-            res.json({
-                code:"0",
-                statu:"error"
-            })
-        }
-        
-        res.json({
-            code:"1",
-            statu:"success",
-            data:doc
+    let prd={};
+    // tb_prdList.find({"_id":prd_id},function(err,doc){
+    //     if(err){
+    //         res.json({
+    //             code:"0",
+    //             statu:"error"
+    //         })
+    //     }
+     
+    //     // res.json({
+    //     //     code:"1",
+    //     //     statu:"success",
+    //     //     data:doc
+    //     // })
+
+    // });
+   
+
+
+    function findPrd(){
+        let findProduct=new Promise((resolve,reject)=>{
+            tb_prdList.find({"_id":prd_id},function(err,doc){
+                if(err){
+                    reject("查找商品失败") 
+                }else{
+                    resolve(doc)
+                }
+             
+            });
         })
+        return findProduct;
+    };
+// 寻找这个商品的属性   
+    function attr(prdList){
+       
+        let findAttr=new Promise((resolve,reject)=>{
+             
+            tb_prdAttr.find({"prd_list_id":prd_id},function(err,doc){
+                if(err){
+                    reject("查找属性失败") 
+                }else{
+                    if(doc.length>0){
+                        let attrArr=[];
+                        doc.forEach(val=>{
+                            attrArr.push(val.attrName)
+                        })
+                        resolve(attrArr)
+                    }
+                  
+                }
+            })
+        });
+        return findAttr;
+    };
+// 寻找这个商品的属性值
+    function val(attr){
+        let findVal=new Promise((resolve,reject)=>{
+            tb_prdAttrVal.find({"prd_list_id":prd_id},function(err,doc){
+                if(err){
+                    reject("查找属性值失败") 
+                }else{
+                    // console.log(doc)
+                    if(doc.length>0){
+                        let valArr=[];
+                        doc.forEach(val=>{
+                            valArr.push(val.attr_val)
+                        })
+                        resolve(valArr)
+                    }
+                  
+                }
+            })
+        });
+        return findVal
+    }
+
+    findPrd()
+    .then(prd=>{
+        // console.log("商品信息"+prd);
+        // prd[prd]=prd;
+        return attr(prd)
+    })
+    .then(attr=>{
+        // prd[attr]=attr;
+        console.log("商品属性是"+attr)
+        return val(attr)
+    })
+    .then(val=>{
+        // prd[val]=val;
+        console.log("属性值"+val)
+    })
+    .catch(err=>{
+        console.log("有错误"+err)
     })
 })
 
@@ -51,13 +131,13 @@ router.post("/findCollect",function(req,res){
                 statu:"error"
             })
         }
-        // 代表已经收藏
+        // 1代表已经收藏
         if(doc.length>0){
             res.json({
                 code:"1"
             })
         }else{
-            // 代表没有收藏
+            // 0代表没有收藏
             res.json({
                 code:"0"
             })
@@ -68,12 +148,12 @@ router.post("/findCollect",function(req,res){
 
 // 商品详情页点击添加收藏功能
 router.post("/addCollect",function(req,res){
-    let user_id=req.body.user_id;
-    let collect_date=req.body.collect_date;
+    let user_id=req.body.user_id;         //用户id
+    let collect_date=req.body.collect_date;   //收藏时间
     // let prd_id=req.body.prd_id;
     // let prd_img=req.body.prd_img;
-    // let prd_price=req.body.prd_price;
-    let prdArr=JSON.parse(req.body.prd);
+    // let prd_price=req.body.prd_price; 
+    let prdArr=JSON.parse(req.body.prd);   //商品信息
     let enity=new tb_collect({});
     
    
@@ -88,14 +168,12 @@ router.post("/addCollect",function(req,res){
         enity.buy=val.buy
     });
     enity.save(err=>{
-        try {
-            err
-        }
-        catch{
+        if(err){
             res.json({
                 statu:"error"
             })
         }
+       
         res.json({
             statu:"success"
         })
