@@ -19,7 +19,9 @@ router.all('*', function(req, res, next) {
 // 刚进入详情页时根据商品id给前端返回这个商品的信息
 router.post("/detail",function(req,res){
     let prd_id=req.body.prd_id;
-    let prd={};
+    console.log(prd_id)
+    let prd=[];
+    let obj={item:[]}
     // tb_prdList.find({"_id":prd_id},function(err,doc){
     //     if(err){
     //         res.json({
@@ -42,9 +44,9 @@ router.post("/detail",function(req,res){
         let findProduct=new Promise((resolve,reject)=>{
             tb_prdList.find({"_id":prd_id},function(err,doc){
                 if(err){
-                    reject("查找商品失败") 
+                    reject("查找商品失败");
                 }else{
-                    resolve(doc)
+                    resolve(doc);
                 }
              
             });
@@ -63,9 +65,20 @@ router.post("/detail",function(req,res){
                     if(doc.length>0){
                         let attrArr=[];
                         doc.forEach(val=>{
-                            attrArr.push(val.attrName)
+                            // let obj={item:[]}
+                            // attrArr.push(val)
+                            obj["name"]=val.attrName;
+                            obj["id"]=val._id;
+                            let newObj=JSON.stringify(obj);
+                            prd.push(JSON.parse(newObj));
+                            
                         })
-                        resolve(attrArr)
+                      
+                        resolve(prd)
+                      
+
+                    }else{
+                        console.log("没有找到属性名称")
                     }
                   
                 }
@@ -80,13 +93,22 @@ router.post("/detail",function(req,res){
                 if(err){
                     reject("查找属性值失败") 
                 }else{
-                    // console.log(doc)
+                    
                     if(doc.length>0){
-                        let valArr=[];
-                        doc.forEach(val=>{
-                            valArr.push(val.attr_val)
-                        })
-                        resolve(valArr)
+                       
+                       for(var i=0;i<attr.length;i++){
+                           for(var j=0;j<doc.length;j++){
+                               if(attr[i].id==doc[j].attr_id){
+                                attr[i].item.push(doc[j])
+                               }
+                               
+                           }
+                          
+                       }
+                          
+                     resolve(attr);
+                    }else{
+                        console.log("没有找到属性值")
                     }
                   
                 }
@@ -97,18 +119,15 @@ router.post("/detail",function(req,res){
 
     findPrd()
     .then(prd=>{
-        // console.log("商品信息"+prd);
-        // prd[prd]=prd;
         return attr(prd)
     })
     .then(attr=>{
-        // prd[attr]=attr;
-        console.log("商品属性是"+attr)
         return val(attr)
     })
     .then(val=>{
-        // prd[val]=val;
-        console.log("属性值"+val)
+        res.json({
+            data:val
+        })
     })
     .catch(err=>{
         console.log("有错误"+err)
