@@ -16,30 +16,31 @@ router.all('*', function(req, res, next) {
 // ---------------------------------------------------------------商品详情页的后台接口----------------------------------------------------------------------------
 
 
+
+router.post("/getPrdInfor",function(req,res){
+    let prd_id=req.body.prd_id;
+     tb_prdList.find({"_id":prd_id},function(err,doc){
+        if(err){
+            res.json({
+                code:"0",
+                statu:"error"
+            })
+        }
+        res.json({
+            code:"1",
+            statu:"success",
+            data:doc
+        })
+
+    });
+})
+
 // 刚进入详情页时根据商品id给前端返回这个商品的信息
-router.post("/detail",function(req,res){
+router.post("/getAttr",function(req,res){
     let prd_id=req.body.prd_id;
     console.log(prd_id)
     let prd=[];
     let obj={item:[]}
-    // tb_prdList.find({"_id":prd_id},function(err,doc){
-    //     if(err){
-    //         res.json({
-    //             code:"0",
-    //             statu:"error"
-    //         })
-    //     }
-     
-    //     // res.json({
-    //     //     code:"1",
-    //     //     statu:"success",
-    //     //     data:doc
-    //     // })
-
-    // });
-   
-
-
     function findPrd(){
         let findProduct=new Promise((resolve,reject)=>{
             tb_prdList.find({"_id":prd_id},function(err,doc){
