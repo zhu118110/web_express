@@ -13,19 +13,23 @@ router.all('*', function(req, res, next) {
     next();
 });
 
+
+// 加入购物车
 router.post("/joinCar",function(req,res){
     let userId=req.body.userId;
-    let attr=req.body.attr;
-    let prd_id=req.body.prd_id;
-    let buyNumber=req.body.buyNumber;
-    let attr_id=req.body.attr_id;
-    let val_id=req.body.val_id;
-    console.log(buyNumber)
+    let prd=req.body.prd;
+    // let attr=req.body.attr;
+    // let prd_id=req.body.prd_id;
+    // let buyNumber=req.body.buyNumber;
+    // let attr_id=req.body.attr_id;
+    // let val_id=req.body.val_id;
+    
     let enity=new tb_shopCar({
         userId:userId,
-        attr:attr,
-        prd_id:prd_id,
-        buyNumber:buyNumber
+        prd:prd
+        // attr:attr,
+        // prd_id:prd_id,
+        // buyNumber:buyNumber
     })
     enity.save(function(err){
         if(err){
@@ -37,6 +41,33 @@ router.post("/joinCar",function(req,res){
                 code:"1"
             });
         }
+    })
+});
+
+
+router.post("/findshopCar",function(req,res){
+    let userId=req.body.userId;
+   
+    tb_shopCar.find({"userId":userId},function(err,doc){
+        if(err){
+            res.json({
+                code:"-1"
+            })
+            return;
+        }
+        if(doc.length>0){
+            res.json({
+                code:"1",
+                data:doc
+            })
+        }else{
+            res.json({
+                code:"0",
+                data:doc
+            })
+        }
+       
+
     })
 })
 

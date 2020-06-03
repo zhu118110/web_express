@@ -9,6 +9,7 @@ var schema=new model.Schema({
     "prd_id":String,   //产品iD
     "attr_id":String,   //属性id
     "val_id":String,   //属性值id
+    "prd":String
 })
 
 var shopCar=model.model("shopCar",schema,"shopCar");
