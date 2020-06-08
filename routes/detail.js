@@ -15,8 +15,6 @@ router.all('*', function(req, res, next) {
 });
 // ---------------------------------------------------------------商品详情页的后台接口----------------------------------------------------------------------------
 
-
-
 router.post("/getPrdInfor",function(req,res){
     let prd_id=req.body.prd_id;
      tb_prdList.find({"_id":prd_id},function(err,doc){
@@ -195,6 +193,7 @@ router.post("/addCollect",function(req,res){
         }
        
         res.json({
+            code:"1",
             statu:"success"
         })
     })
@@ -224,6 +223,7 @@ router.post("/cancelCollect",function(req,res){
                     })
                 }
                 res.json({
+                    code:"1",
                     statu:"success"
                 })
             })

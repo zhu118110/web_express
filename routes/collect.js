@@ -24,7 +24,6 @@ router.post("/collect",function(req,res){
         }catch{
             res.json({
                 statu:"error",
-
             })
         }
         // console.log(doc);
