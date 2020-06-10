@@ -16,41 +16,53 @@ router.all('*', function(req, res, next) {
 // 点个商品购买后生产等待发货的信息
 router.post("/buySingle",function(req,res){
     let user_id=req.body.user_id;
-    let prd_id=req.body.prd_id;
-    let singlePrice =req.body.singlePrice;   //商品单价
-    let buy_date=req.body.buy_date;  //购买的时间
-    let buy_number=req.body.buy_number;  //购买的数量
-    let totle=req.body.totle;   //商品总价
-    let payStyle=req.body.payStyle;   //支付的方式
-    let address=JSON.parse(req.body.address);   //收货地址
-    let orderNumber=req.body.orderNumber;   //订单号
-    let enite =new tb_waitSend({
-        user_id,
-        prd_id,
-        singlePrice,
-        buy_date,
-        buy_number,
-        totle,
-        payStyle,
-        orderNumber,
-        status:0,
-        recipients:address[0].recipients,
-        phone:address[0].phone,
-        province:address[0].province,
-        city:address[0].city,
-        district:address[0].district,
-        detailAddress:address[0].detailAddress,
+    let prdInfor=JSON.parse(req.body.prdInfor);  //数据格式为：[ [{商品1}],[{商品2}],[{商品3}],.... ]
+    prdInfor.forEach((val,i)=>{
+        val.forEach((r,n)=>{
+            let enity=new tb_waitSend();
+            enity.user_id=user_id;   //用户id
+            enity.prd_id=r._id;   //商品id
+            enity.buy_date=r.dateStr;     //购买日期
+            enity.singlePrice=r.price;     //商品单价
+            enity.buy_number=r.buyNumber;   //购买的数量
+            enity.totle=r.totle;     //购买的总价
+            enity.status=0;     //商品状态 ---0:未发货
+            enity.orderNumber=r.orderNumber;    //订单号码
+            // 遍历收货地址
+            r.address.forEach(a=>{
+                enity.recipients=a.recipients;    //  收件人
+                enity.phone=a.phone;   //手机号
+                enity.province=a.province;    //省
+                enity.city=a.city   //市
+                enity.district=a.district;   //县、区
+                enity.detailAddress=a.detailAddress;  //详细地址
+            });
+            // 遍历商品属性
+            r.attr.forEach(attr=>{
+                enity.attr+=attr;
+            });
+            try{
+                // 保存到数据库
+                enity.save(function(err){
+                    if(err){
+                        throw err;
+                    }else{
+                        if(n==val.length-1){
+                           res.json({
+                               code:"1"
+                           })
+                        }
+                    }
+                })
+            }catch(err){
+                res.json({
+                    code:"0",
+                });
+                return;
+            };
+        })
     });
-    enite.save(function(err){
-        if(err){
-            throw err
-        }else{
-            res.json({
-                code:"1"
-            })
-         
-        }
-    })
+       
 });
 
 

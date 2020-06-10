@@ -100,7 +100,6 @@ router.post("/getAttr",function(req,res){
                                if(attr[i].id==doc[j].attr_id){
                                 attr[i].item.push(doc[j])
                                }
-                               
                            }
                           
                        }
@@ -125,11 +124,15 @@ router.post("/getAttr",function(req,res){
     })
     .then(val=>{
         res.json({
+            
             data:val
         })
     })
     .catch(err=>{
-        console.log("有错误"+err)
+        res.json({
+            code:"0",
+           
+        })
     })
 })
 

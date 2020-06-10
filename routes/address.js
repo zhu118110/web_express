@@ -103,16 +103,24 @@ router.post('/setDefault',function(req,res){
   })
 
   function updata(val,isDefault){
-    tb_address.updateOne({"_id":val._id},{"$set":{
-      "isDefault":isDefault
-    }},function(err,doc){
-      if(err) throw err;
-      if(isDefault==true){
-        res.json({
-          code:"1"
-        })
-      }
-    })
+    try{
+      tb_address.updateOne({"_id":val._id},{"$set":{
+        "isDefault":isDefault
+      }},function(err,doc){
+        if(err) throw err;
+        if(isDefault==true){
+          res.json({
+            code:"1"
+          })
+        }
+      })
+    }catch(err){
+      res.json({
+        code:"0"
+      })
+    }
+   
+
   }
 })
 
@@ -129,18 +137,25 @@ router.post("/editAddress",function(req,res){
    req.body.district,
    req.body.detailAddress,
   ];
-  tb_address.update({userId,_id},{$set:{
-    recipients,
-    phone,
-    province,
-    city,district,
-    detailAddress
-  }},function(err,doc){
-    if(err) throw err;
-    res.json({
-      code:"1",
+  try{
+    tb_address.update({userId,_id},{$set:{
+      recipients,
+      phone,
+      province,
+      city,district,
+      detailAddress
+    }},function(err,doc){
+      if(err) throw err;
+      res.json({
+        code:"1",
+      })
     })
-  })
+  }catch(err){
+      res.json({
+        code:"0",
+      })
+  }
+  
 })
 
 
@@ -148,11 +163,18 @@ router.post("/editAddress",function(req,res){
 // 删:删除地址
 router.post("/delAddress",function(req,res){
   let [userId,_id]=[req.body.userId,req.body._id];
-  tb_address.findOneAndRemove({userId,_id},function(err,doc){
-    if(err) throw err;
-    res.json({
-      code:"1",
+  try{
+    tb_address.findOneAndRemove({userId,_id},function(err,doc){
+      if(err) throw err;
+      res.json({
+        code:"1",
+      })
     })
-  })
+  }catch(err){
+    res.json({
+      code:"0",
+    })
+  }
+  
 })
 module.exports = router;

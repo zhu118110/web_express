@@ -19,6 +19,10 @@ var schema=new model.Schema({
     "city": String,  //市
     "district":String,   //县区
     "detailAddress": String,   //详细地址
+    "attr":{
+        type:String,
+        default:""
+    },
     "status":{     //订单状态，默认0，表示未发货
         type:Number,
         default:0
