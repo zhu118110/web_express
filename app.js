@@ -13,8 +13,9 @@ var detail = require('./routes/detail');   //商品详情页接口
 var aboutMe = require('./routes/aboutMe');   //关于我 页面接口
 var collect = require('./routes/collect');   //我的收藏 页面接口
 var address = require('./routes/address');   //我的地址 页面接口
-var waitSend= require('./routes/waitSend');    //购买 页面接口
+var waitSend= require('./routes/waitSend');    //待发货 页面接口
 var shopCar= require('./routes/shopCar');    //购物车页面接口
+var buy=require('./routes/buy')    //购买页面接口
 
 var app = express();
 app.all('*', function (req, res, next) {
@@ -50,6 +51,7 @@ app.use('/', aboutMe);
 app.use('/', collect);
 app.use('/', address);
 app.use('/', waitSend);
+app.use('/', buy);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -63,7 +63,7 @@ router.post("/uploadHeadImg",function(req,res){
                 // console.log(name);   //name是客户端上传的文件路径
                 // console.log(files[name].path); // 服务端保存的路径
                 // 将上传的图像保存到数据
-                let filePath="http://192.168.88.69:3200";
+                let filePath="http://192.168.43.26:3200";
                 filePath+=files[name].path.substring(6);  //将返回的临时地址中的 public\ 字段删掉改为服务端地址
                 filePath=filePath.replace(/\\/img,"/");    //将路径中的\变为/
                 console.log("图片地址是"+filePath)

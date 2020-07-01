@@ -19,6 +19,10 @@ var schema=new model.Schema({
     "city": String,  //市
     "district":String,   //县区
     "detailAddress": String,   //详细地址
+    "remark":{
+        type:String,
+        default:""
+    },
     "attr":{
         type:String,
         default:""
